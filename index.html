@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pangiya — Websites That Turn Visitors Into Customers</title>
+<meta name="description" content="We design fast, modern websites for local businesses — built to turn visitors into calls, bookings, and sales.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================
+     TOKENS
+     ============================================ */
+  :root{
+    --ink:        #11161A;
+    --ink-soft:   #3C453F;
+    --canvas:     #F1F2EC;
+    --surface:    #FBFAF7;
+    --moss:       #1E5C45;
+    --moss-deep:  #163F31;
+    --moss-pale:  #DCE8E0;
+    --brass:      #B8893B;
+    --paper-soft: #B9C2BB;
+    --line:       #DEE1D8;
+    --line-dark:  #2A3330;
+
+    --font-display: 'Fraunces', serif;
+    --font-body: 'Inter', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    --container: 1180px;
+    --gap: clamp(20px, 4vw, 40px);
+    --section-pad: clamp(72px, 11vw, 148px);
+
+    --ease: cubic-bezier(.16,.8,.24,1);
+  }
+
+  /* ============================================
+     RESET
+     ============================================ */
+  *,*::before,*::after{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{ margin:0; }
+  img,svg{ display:block; max-width:100%; }
+  button{ font-family: inherit; }
+  a{ color: inherit; text-decoration:none; }
+  ul{ margin:0; padding:0; list-style:none; }
+  input, textarea{ font-family: inherit; font-size: inherit; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *,*::before,*::after{ animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+  }
+
+  body{
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection{ background: var(--moss); color: var(--surface); }
+
+  :focus-visible{
+    outline: 2px solid var(--moss);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .wrap{
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px);
+  }
+
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--moss);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+  }
+  .eyebrow::before{
+    content:'';
+    width: 16px; height: 1px;
+    background: var(--brass);
+  }
+  .eyebrow.on-dark{ color: var(--moss-pale); }
+  .eyebrow.on-dark::before{ background: var(--brass); }
+
+  h1,h2,h3{
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .section-head{
+    max-width: 620px;
+    margin: 0 0 56px;
+  }
+  .section-head h2{
+    font-size: clamp(30px, 4vw, 42px);
+  }
+  .section-head p{
+    margin: 18px 0 0;
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 480px;
+  }
+  .section-head.center{ margin-left:auto; margin-right:auto; text-align:center; }
+  .section-head.center p{ margin-left:auto; margin-right:auto; }
+
+  /* buttons */
+  .btn{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 15px 28px;
+    border-radius: 7px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform .35s var(--ease), background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+    white-space: nowrap;
+  }
+  .btn:active{ transform: translateY(1px); }
+  .btn-primary{
+    background: var(--moss);
+    color: var(--surface);
+    box-shadow: 0 1px 0 0 rgba(0,0,0,0.08);
+  }
+  .btn-primary:hover{ background: var(--moss-deep); transform: translateY(-1px); }
+  .btn-ghost{
+    background: transparent;
+    border-color: var(--line-dark);
+    color: var(--ink);
+  }
+  .btn-ghost:hover{ border-color: var(--moss); color: var(--moss); }
+  .btn-ghost.on-dark{ border-color: rgba(241,242,236,0.28); color: var(--canvas); }
+  .btn-ghost.on-dark:hover{ border-color: var(--canvas); }
+  .btn-block{ width: 100%; }
+  .btn-sm{ padding: 10px 18px; font-size: 13.5px; border-radius: 6px; }
+
+  /* ============================================
+     NAV
+     ============================================ */
+  header{
+    position: fixed;
+    top:0; left:0; right:0;
+    z-index: 200;
+    padding: 22px 0;
+    transition: padding .3s var(--ease), background .3s var(--ease), border-color .3s var(--ease);
+    border-bottom: 1px solid transparent;
+  }
+  header.scrolled{
+    padding: 14px 0;
+    background: rgba(241,242,236,0.86);
+    backdrop-filter: blur(10px);
+    border-color: var(--line);
+  }
+  nav.wrap{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo{
+    display:flex; flex-direction: column; line-height: 1;
+    font-family: var(--font-display);
+  }
+  .logo strong{ font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
+  .logo span{
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    color: var(--moss);
+    margin-top: 4px;
+  }
+  .nav-links{
+    display:flex;
+    align-items:center;
+    gap: 36px;
+    font-size: 14.5px;
+    font-weight: 500;
+  }
+  .nav-links a{
+    position: relative;
+    color: var(--ink-soft);
+    transition: color .2s;
+    padding: 4px 0;
+  }
+  .nav-links a:hover{ color: var(--ink); }
+  .nav-cta{ display:flex; align-items:center; gap: 28px; }
+  .hamburger{
+    display:none;
+    width: 38px; height: 38px;
+    border: 1px solid var(--line-dark);
+    border-radius: 6px;
+    background: transparent;
+    position: relative;
+    cursor: pointer;
+  }
+  .hamburger span{
+    position:absolute; left: 9px; right: 9px; height: 1.5px; background: var(--ink);
+    transition: transform .25s var(--ease), opacity .25s var(--ease);
+  }
+  .hamburger span:nth-child(1){ top: 14px; }
+  .hamburger span:nth-child(2){ top: 19px; }
+  .hamburger span:nth-child(3){ top: 24px; }
+  .hamburger.open span:nth-child(1){ transform: translateY(5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2){ opacity: 0; }
+  .hamburger.open span:nth-child(3){ transform: translateY(-5px) rotate(-45deg); }
+
+  .mobile-menu{
+    position: fixed;
+    inset: 0;
+    background: var(--canvas);
+    z-index: 190;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    font-family: var(--font-display);
+    font-size: 30px;
+    transform: translateY(-8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s;
+  }
+  .mobile-menu.open{ opacity:1; transform: translateY(0); visibility: visible; }
+
+  /* ============================================
+     HERO
+     ============================================ */
+  .hero{
+    position: relative;
+    padding: clamp(150px, 22vw, 210px) 0 clamp(80px, 10vw, 120px);
+    background: var(--ink);
+    color: var(--canvas);
+    overflow: hidden;
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(241,242,236,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(241,242,236,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 70% 60% at 30% 20%, black 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-grid{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap: clamp(40px, 6vw, 80px);
+    align-items: center;
+  }
+  .hero-copy h1{
+    font-size: clamp(36px, 5.4vw, 64px);
+    color: var(--surface);
+  }
+  .hero-copy h1 em{
+    font-style: italic;
+    font-weight: 500;
+    color: var(--moss-pale);
+  }
+  .hero-copy p.lede{
+    margin: 26px 0 0;
+    font-size: 18px;
+    line-height: 1.65;
+    color: var(--paper-soft);
+    max-width: 460px;
+  }
+  .hero-actions{
+    margin-top: 38px;
+    display:flex;
+    align-items:center;
+    gap: 22px;
+    flex-wrap: wrap;
+  }
+  .hero-actions .note{
+    font-size: 13px;
+    color: var(--paper-soft);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+  .hero-sub-link{
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--canvas);
+    border-bottom: 1px solid rgba(241,242,236,0.35);
+    padding-bottom: 2px;
+    transition: border-color .2s;
+  }
+  .hero-sub-link:hover{ border-color: var(--canvas); }
+
+  /* Hero visual: browser mockup signature element */
+  .hero-visual{ position: relative; }
+  .browser-mock{
+    background: var(--surface);
+    border-radius: 14px;
+    box-shadow: 0 30px 70px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(241,242,236,0.06);
+    overflow: hidden;
+    transform: rotate(1.2deg);
+  }
+  .browser-bar{
+    display:flex; align-items:center; gap: 16px;
+    padding: 13px 16px;
+    background: var(--canvas);
+    border-bottom: 1px solid var(--line);
+  }
+  .browser-dots{ display:flex; gap: 6px; }
+  .browser-dots span{ width:8px; height:8px; border-radius:50%; background: var(--line-dark); opacity:.35; }
+  .browser-url{
+    flex:1;
+    background: var(--surface);
+    border-radius: 5px;
+    padding: 5px 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .browser-body{ padding: 30px 28px 36px; }
+  .mock-bar{ height: 11px; border-radius: 3px; background: var(--line); margin-bottom: 10px; }
+  .mock-bar.w-60{ width: 60%; height: 16px; background: var(--ink); opacity: .85; margin-bottom: 16px;}
+  .mock-bar.w-90{ width: 92%; }
+  .mock-bar.w-70{ width: 68%; margin-bottom: 26px; }
+  .mock-cta-row{ display:flex; align-items:center; gap: 14px; }
+  .mock-cta{
+    position: relative;
+    background: var(--moss);
+    color: var(--surface);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 11px 22px;
+    border-radius: 6px;
+  }
+  .mock-cta::after{
+    content:'';
+    position:absolute; inset:0;
+    border-radius: 6px;
+    border: 1.5px solid var(--moss);
+    animation: pulseRing 2.6s var(--ease) infinite;
+  }
+  .mock-meta{ font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
+  @keyframes pulseRing{
+    0%{ transform: scale(1); opacity: .8; }
+    80%{ transform: scale(1.35); opacity: 0; }
+    100%{ opacity: 0; }
+  }
+
+  .float-chip{
+    position: absolute;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 8px;
+    box-shadow: 0 14px 30px -10px rgba(0,0,0,0.45);
+    display:flex; align-items:center; gap:8px;
+  }
+  .float-chip .dot{ width:6px; height:6px; border-radius:50%; background: var(--moss); }
+  .chip-call{ top: -6%; right: -8%; animation: floatA 6s ease-in-out infinite; }
+  .chip-book{ bottom: 6%; left: -10%; animation: floatB 7s ease-in-out infinite; animation-delay: .8s; }
+  @keyframes floatA{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(-10px); }
+  }
+  @keyframes floatB{
+    0%,100%{ transform: translateY(0); }
+    50%{ transform: translateY(10px); }
+  }
+
+  /* ============================================
+     TRUST STRIP
+     ============================================ */
+  .trust{
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 38px 0;
+  }
+  .trust p{
+    text-align:center;
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0 0 22px;
+  }
+  .marquee{
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+  }
+  .marquee-track{
+    display:flex;
+    gap: 48px;
+    width: max-content;
+    animation: scrollLeft 26s linear infinite;
+  }
+  .marquee:hover .marquee-track{ animation-play-state: paused; }
+  .marquee-track span{
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @keyframes scrollLeft{
+    from{ transform: translateX(0); }
+    to{ transform: translateX(-50%); }
+  }
+
+  /* ============================================
+     SERVICES
+     ============================================ */
+  .services{ padding: var(--section-pad) 0; }
+  .service-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap);
+  }
+  .service-card{
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 38px 32px 36px;
+    transition: transform .35s var(--ease), box-shadow .35s var(--ease), border-color .35s var(--ease);
+  }
+  .service-card:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px -28px rgba(17,22,26,0.25);
+    border-color: var(--moss-pale);
+  }
+  .service-icon{
+    width: 44px; height: 44px;
+    border-radius: 9px;
+    background: var(--moss-pale);
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom: 26px;
+    color: var(--moss-deep);
+  }
+  .service-card h3{
+    font-size: 21px;
+    margin-bottom: 12px;
+  }
+  .service-card p{
+    margin:0;
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* ============================================
+     PORTFOLIO
+     ============================================ */
+  .portfolio{ padding: var(--section-pad) 0; background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .portfolio-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gap);
+  }
+  .case-card{
+    background: var(--canvas);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    display:flex;
+    flex-direction: column;
+  }
+  .case-preview{ padding: 22px 22px 0; }
+  .case-mock{
+    background: var(--ink);
+    border-radius: 9px;
+    overflow:hidden;
+  }
+  .case-mock-bar{ display:flex; gap:5px; padding: 9px 11px; }
+  .case-mock-bar span{ width:6px; height:6px; border-radius:50%; background: rgba(241,242,236,0.25); }
+  .case-mock-body{ padding: 18px 16px 22px; }
+  .case-mock-line{ height: 7px; border-radius: 2px; background: rgba(241,242,236,0.14); margin-bottom: 7px; }
+  .case-mock-line.w1{ width: 50%; height: 10px; background: var(--moss-pale); margin-bottom: 12px; }
+  .case-mock-line.w2{ width: 85%; }
+  .case-mock-line.w3{ width: 60%; margin-bottom: 14px; }
+  .case-mock-btn{
+    display:inline-block;
+    background: var(--moss);
+    color: var(--surface);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 7px 14px;
+    border-radius: 4px;
+  }
+  .case-body{ padding: 24px 26px 28px; flex:1; display:flex; flex-direction:column; }
+  .case-tag{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin-bottom: 10px;
+    display:block;
+  }
+  .case-body h3{ font-size: 20px; margin-bottom: 16px; }
+  .case-row{ margin-bottom: 14px; }
+  .case-row .label{
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--paper-soft);
+    display:block;
+    margin-bottom: 5px;
+  }
+  .case-row.problem .label{ color: #9AA39C; }
+  .case-row.problem p{ color: var(--ink-soft); font-size: 14px; margin:0; }
+  .case-row.fix .label{ color: var(--moss); }
+  .case-row.fix p{ color: var(--ink); font-size: 14px; margin:0; font-weight: 500; }
+  .case-connector{
+    display:flex; align-items:center; gap:8px;
+    margin: -4px 0 14px;
+    color: var(--paper-soft);
+  }
+  .case-connector svg{ width:14px; height:14px; }
+  .case-footer{ margin-top: auto; padding-top: 18px; }
+
+  /* ============================================
+     ABOUT
+     ============================================ */
+  .about{ padding: var(--section-pad) 0; }
+  .about-grid{
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: var(--gap);
+    align-items: start;
+  }
+  .about-copy p{
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 540px;
+    margin: 0 0 30px;
+  }
+  .tag-row{ display:flex; gap: 12px; flex-wrap:wrap; }
+  .tag-chip{
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.04em;
+    padding: 9px 16px;
+    border: 1px solid var(--line-dark);
+    border-radius: 100px;
+    color: var(--ink-soft);
+  }
+  .about-figure{
+    background: var(--ink);
+    border-radius: 14px;
+    padding: 38px;
+    color: var(--canvas);
+  }
+  .about-figure .eyebrow{ margin-bottom: 22px; }
+  .about-figure blockquote{
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 22px;
+    line-height: 1.45;
+    margin: 0;
+    color: var(--surface);
+  }
+  .about-figure .who{
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--paper-soft);
+  }
+
+  /* ============================================
+     CONTACT
+     ============================================ */
+  .contact{ padding: var(--section-pad) 0; background: var(--ink); color: var(--canvas); }
+  .contact-grid{
+    display:grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(40px, 6vw, 90px);
+  }
+  .contact-copy h2{ color: var(--surface); font-size: clamp(28px, 3.6vw, 38px); }
+  .contact-copy p{ color: var(--paper-soft); margin: 18px 0 0; max-width: 420px; font-size: 16px; }
+  .contact-detail{
+    margin-top: 36px;
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    color: var(--paper-soft);
+  }
+  .contact-detail a{ color: var(--canvas); }
+
+  .form-card{
+    background: var(--surface);
+    border-radius: 14px;
+    padding: clamp(28px, 4vw, 42px);
+    color: var(--ink);
+  }
+  .form-row{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .field{ margin-bottom: 20px; }
+  .field label{
+    display:block;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .field input, .field textarea{
+    width: 100%;
+    border: 1px solid var(--line);
+    background: var(--canvas);
+    border-radius: 7px;
+    padding: 13px 14px;
+    color: var(--ink);
+    transition: border-color .2s;
+  }
+  .field input:focus, .field textarea:focus{
+    border-color: var(--moss);
+    outline: none;
+  }
+  .field textarea{ resize: vertical; min-height: 100px; }
+  .form-foot{ display:flex; align-items:center; justify-content: space-between; gap: 16px; margin-top: 6px; }
+  .form-note{ font-size: 12.5px; color: var(--ink-soft); }
+  .form-success{
+    display:none;
+    text-align:center;
+    padding: 30px 10px;
+  }
+  .form-success.show{ display:block; }
+  .form-success .check{
+    width:46px; height:46px; border-radius:50%;
+    background: var(--moss-pale); color: var(--moss-deep);
+    display:flex; align-items:center; justify-content:center;
+    margin: 0 auto 18px;
+  }
+  .form-success h3{ font-size: 19px; margin-bottom: 8px; }
+  .form-success p{ color: var(--ink-soft); font-size: 14.5px; margin:0; }
+  .contact-form.hide{ display:none; }
+
+  /* ============================================
+     FOOTER
+     ============================================ */
+  footer{
+    background: var(--ink);
+    color: var(--paper-soft);
+    padding: 50px 0 34px;
+    border-top: 1px solid var(--line-dark);
+  }
+  .footer-top{
+    display:flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 28px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .footer-links{ display:flex; gap: 28px; font-size: 14px; }
+  .footer-links a:hover{ color: var(--canvas); }
+  .footer-bottom{
+    display:flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 22px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #5C6660;
+  }
+
+  /* ============================================
+     MODAL
+     ============================================ */
+  .modal-overlay{
+    position: fixed; inset:0;
+    background: rgba(17,22,26,0.7);
+    backdrop-filter: blur(3px);
+    display:flex; align-items:center; justify-content:center;
+    padding: 24px;
+    z-index: 500;
+    opacity:0; visibility:hidden;
+    transition: opacity .25s var(--ease), visibility .25s;
+  }
+  .modal-overlay.open{ opacity:1; visibility: visible; }
+  .modal{
+    background: var(--surface);
+    border-radius: 16px;
+    max-width: 560px;
+    width: 100%;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 36px;
+    transform: translateY(14px) scale(.98);
+    transition: transform .3s var(--ease);
+  }
+  .modal-overlay.open .modal{ transform: translateY(0) scale(1); }
+  .modal-close{
+    width: 34px; height:34px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    float: right;
+    color: var(--ink-soft);
+    transition: border-color .2s, color .2s;
+  }
+  .modal-close:hover{ border-color: var(--moss); color: var(--moss); }
+  .modal h3{ font-size: 24px; margin: 6px 0 4px; clear: both; }
+  .modal .modal-tag{ font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--brass); }
+  .modal-row{ margin: 22px 0; }
+  .modal-row .label{ font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--paper-soft); display:block; margin-bottom: 6px; }
+  .modal-row.problem .label{ color: #9AA39C; }
+  .modal-row p{ margin:0; font-size: 15px; line-height: 1.6; color: var(--ink-soft); }
+  .modal-row.fix .label{ color: var(--moss); }
+  .modal-row.fix p{ color: var(--ink); font-weight:500; }
+  .modal-actions{ margin-top: 28px; display:flex; gap: 14px; }
+
+  /* ============================================
+     SCROLL REVEAL
+     ============================================ */
+  .reveal{ opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.is-visible{ opacity: 1; transform: translateY(0); }
+
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width: 980px){
+    .hero-grid{ grid-template-columns: 1fr; }
+    .hero-visual{ margin-top: 20px; max-width: 460px; }
+    .about-grid{ grid-template-columns: 1fr; }
+    .about-figure{ order: -1; }
+    .contact-grid{ grid-template-columns: 1fr; }
+    .service-grid, .portfolio-grid{ grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 760px){
+    .nav-links, .nav-cta .btn-ghost{ display:none; }
+    .hamburger{ display:block; }
+    .form-row{ grid-template-columns: 1fr; }
+    .service-grid, .portfolio-grid{ grid-template-columns: 1fr; }
+    .footer-top{ flex-direction: column; }
+  }
+
+  @media (max-width: 560px){
+    .hero-actions{ flex-direction: column; align-items: flex-start; gap: 14px; }
+    .chip-call, .chip-book{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================ NAV ============================================ -->
+<header id="siteHeader">
+  <nav class="wrap">
+    <a href="#top" class="logo">
+      <strong>Pangiya</strong>
+      <span>WEB STUDIO</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-cta">
+      <a href="#contact" class="btn btn-ghost btn-sm">Get a Free Review</a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#services">Services</a>
+  <a href="#work">Work</a>
+  <a href="#about">About</a>
+  <a href="#contact">Contact</a>
+  <a href="#contact" class="btn btn-primary" style="font-size:16px; margin-top:10px;">Get a Free Review</a>
+</div>
+
+<main id="top">
+
+  <!-- ============================================ HERO ============================================ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow on-dark">Website Design for Local Businesses</p>
+        <h1>Websites that turn visitors into <em>customers.</em></h1>
+        <p class="lede">We design fast, modern websites for local businesses — built to turn visitors into calls, bookings, and sales, not just page views.</p>
+        <div class="hero-actions">
+          <a href="#contact" class="btn btn-primary">Get a Free Website Review</a>
+          <a href="#work" class="hero-sub-link">See our work ↓</a>
+        </div>
+        <p class="note" style="margin-top:18px;">Takes 2 minutes. No obligation.</p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="browser-mock">
+          <div class="browser-bar">
+            <div class="browser-dots"><span></span><span></span><span></span></div>
+            <div class="browser-url">yourbusiness.com</div>
+          </div>
+          <div class="browser-body">
+            <div class="mock-bar w-60"></div>
+            <div class="mock-bar w-90"></div>
+            <div class="mock-bar w-70"></div>
+            <div class="mock-cta-row">
+              <span class="mock-cta">Book Now</span>
+              <span class="mock-meta">→ instant confirmation</span>
+            </div>
+          </div>
+        </div>
+        <div class="float-chip chip-call"><span class="dot"></span> New call</div>
+        <div class="float-chip chip-book"><span class="dot"></span> New booking</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ TRUST STRIP ============================================ -->
+  <section class="trust">
+    <div class="wrap">
+      <p>Helping local businesses upgrade their online presence.</p>
+      <div class="marquee">
+        <div class="marquee-track">
+          <span>Dental Practices</span>
+          <span>Auto Repair Shops</span>
+          <span>Fitness Studios</span>
+          <span>Restaurants</span>
+          <span>Home Services</span>
+          <span>Salons &amp; Spas</span>
+          <span>Dental Practices</span>
+          <span>Auto Repair Shops</span>
+          <span>Fitness Studios</span>
+          <span>Restaurants</span>
+          <span>Home Services</span>
+          <span>Salons &amp; Spas</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ SERVICES ============================================ -->
+  <section class="services" id="services">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">What We Do</p>
+        <h2>Three ways we grow your business online</h2>
+      </div>
+
+      <div class="service-grid">
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="9" x2="9" y2="20"/></svg>
+          </div>
+          <h3>Website Design</h3>
+          <p>A brand-new site built around one goal: getting your phone to ring. Clean design, clear calls-to-action, and a layout that makes it easy for customers to choose you.</p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+          </div>
+          <h3>Website Redesigns</h3>
+          <p>Already have a site that feels outdated or slow? We rebuild it with modern design and clear messaging, so it finally works as hard as you do.</p>
+        </div>
+
+        <div class="service-card reveal">
+          <div class="service-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <h3>Monthly Maintenance &amp; Updates</h3>
+          <p>Ongoing updates, fixes, and small changes handled for you, so your site stays fast, current, and online — without you lifting a finger.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ PORTFOLIO ============================================ -->
+  <section class="portfolio" id="work">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="eyebrow">Recent Work</p>
+        <h2>A few concept projects</h2>
+        <p>Examples of how we approach real local business websites — built to show the kind of thinking your project would get.</p>
+      </div>
+
+      <div class="portfolio-grid">
+
+        <article class="case-card reveal"
+          data-tag="Dental · Concept Redesign"
+          data-title="Elite Dental Care"
+          data-problem="Their old site was hard to read on mobile and gave visitors no clear way to book an appointment."
+          data-fix="Redesigned with a mobile-first layout and a one-tap “Book Appointment” button placed above the fold.">
+          <div class="case-preview">
+            <div class="case-mock">
+              <div class="case-mock-bar"><span></span><span></span><span></span></div>
+              <div class="case-mock-body">
+                <div class="case-mock-line w1"></div>
+                <div class="case-mock-line w2"></div>
+                <div class="case-mock-line w3"></div>
+                <span class="case-mock-btn">Book Appointment</span>
+              </div>
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="case-tag">Dental · Concept Redesign</span>
+            <h3>Elite Dental Care</h3>
+            <div class="case-row problem">
+              <span class="label">The problem</span>
+              <p>Hard to read on mobile, with no clear way to book an appointment.</p>
+            </div>
+            <div class="case-connector">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="case-row fix">
+              <span class="label">What we fixed</span>
+              <p>Mobile-first layout with a one-tap booking button above the fold.</p>
+            </div>
+            <div class="case-footer">
+              <button class="btn btn-ghost btn-sm btn-block view-demo-btn">View Demo</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="case-card reveal"
+          data-tag="Auto Repair · Concept Website"
+          data-title="Apex Auto Repair"
+          data-problem="No website at all — customers could only find them through word of mouth, with no way to check hours or services online."
+          data-fix="Built a simple, trustworthy site showing services, hours, and a “Call Now” button front and center.">
+          <div class="case-preview">
+            <div class="case-mock">
+              <div class="case-mock-bar"><span></span><span></span><span></span></div>
+              <div class="case-mock-body">
+                <div class="case-mock-line w1"></div>
+                <div class="case-mock-line w2"></div>
+                <div class="case-mock-line w3"></div>
+                <span class="case-mock-btn">Call Now</span>
+              </div>
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="case-tag">Auto Repair · Concept Website</span>
+            <h3>Apex Auto Repair</h3>
+            <div class="case-row problem">
+              <span class="label">The problem</span>
+              <p>No website at all — customers relied on word of mouth alone.</p>
+            </div>
+            <div class="case-connector">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="case-row fix">
+              <span class="label">What we fixed</span>
+              <p>A trustworthy site with services, hours, and “Call Now” front and center.</p>
+            </div>
+            <div class="case-footer">
+              <button class="btn btn-ghost btn-sm btn-block view-demo-btn">View Demo</button>
+            </div>
+          </div>
+        </article>
+
+        <article class="case-card reveal"
+          data-tag="Fitness · Concept Landing Page"
+          data-title="Prime Fitness Studio"
+          data-problem="Their sign-up page didn’t explain what made the studio different, so visitors browsed and left without joining."
+          data-fix="Created a focused landing page with clear class info and a simple “Reserve Your Spot” form.">
+          <div class="case-preview">
+            <div class="case-mock">
+              <div class="case-mock-bar"><span></span><span></span><span></span></div>
+              <div class="case-mock-body">
+                <div class="case-mock-line w1"></div>
+                <div class="case-mock-line w2"></div>
+                <div class="case-mock-line w3"></div>
+                <span class="case-mock-btn">Reserve Your Spot</span>
+              </div>
+            </div>
+          </div>
+          <div class="case-body">
+            <span class="case-tag">Fitness · Concept Landing Page</span>
+            <h3>Prime Fitness Studio</h3>
+            <div class="case-row problem">
+              <span class="label">The problem</span>
+              <p>The sign-up page didn’t explain what made the studio different.</p>
+            </div>
+            <div class="case-connector">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+            <div class="case-row fix">
+              <span class="label">What we fixed</span>
+              <p>A focused landing page with clear class info and a simple sign-up form.</p>
+            </div>
+            <div class="case-footer">
+              <button class="btn btn-ghost btn-sm btn-block view-demo-btn">View Demo</button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ ABOUT ============================================ -->
+  <section class="about" id="about">
+    <div class="wrap about-grid">
+      <div class="about-copy reveal">
+        <p class="eyebrow">About</p>
+        <h2 style="font-size: clamp(28px, 3.6vw, 38px); margin-bottom: 22px;">Simple, fast, and built to convert.</h2>
+        <p>I help local businesses get modern websites that actually turn visitors into customers — no bloated templates, no confusing navigation, no slow load times. Just clean design and clear paths to call, book, or buy.</p>
+        <div class="tag-row">
+          <span class="tag-chip">Simplicity</span>
+          <span class="tag-chip">Speed</span>
+          <span class="tag-chip">Results</span>
+        </div>
+      </div>
+      <div class="about-figure reveal">
+        <p class="eyebrow on-dark">Approach</p>
+        <blockquote>“Your website's only job is to make it easy for someone to choose you. Everything else is decoration.”</blockquote>
+        <p class="who">— Pangiya</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ CONTACT ============================================ -->
+  <section class="contact" id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-copy reveal">
+        <p class="eyebrow on-dark">Get Started</p>
+        <h2>Let's build something that works for your business.</h2>
+        <p>Tell me a bit about your business and I'll send a free, no-obligation review of your current site — or a quick concept if you don't have one yet.</p>
+        <div class="contact-detail">
+          <span>nabilorad06@gmail.com</span>
+          <span>678-754-5113</span>
+          <span>Usually replies within 1 business day</span>
+        </div>
+      </div>
+
+      <div class="form-card reveal">
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-row">
+            <div class="field">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" required autocomplete="name">
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+            </div>
+          </div>
+          <div class="field">
+            <label for="business">Business Name</label>
+            <input type="text" id="business" name="business" required autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" placeholder="Tell me a little about your business and what you're looking for."></textarea>
+          </div>
+          <div class="form-foot">
+            <span class="form-note">No spam, ever.</span>
+            <button type="submit" class="btn btn-primary">Request My Website</button>
+          </div>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <div class="check">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3>Thanks — request received.</h3>
+          <p>I'll be in touch within 1 business day to talk through your free website review.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================================ FOOTER ============================================ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <a href="#top" class="logo">
+        <strong style="color: var(--canvas);">Pangiya</strong>
+        <span>WEB STUDIO</span>
+      </a>
+      <ul class="footer-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">
+      <span>nabilorad06@gmail.com &nbsp;·&nbsp; 678-754-5113</span>
+      <span>© 2026 Pangiya. Built to convert.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============================================ MODAL (portfolio demo preview) ============================================ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" id="modalClose" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <span class="modal-tag" id="modalTag"></span>
+    <h3 id="modalTitle"></h3>
+    <div class="modal-row problem">
+      <span class="label">The problem</span>
+      <p id="modalProblem"></p>
+    </div>
+    <div class="modal-row fix">
+      <span class="label">What we fixed</span>
+      <p id="modalFix"></p>
+    </div>
+    <div class="modal-actions">
+      <a href="#" class="btn btn-primary">Visit Live Demo</a>
+      <button class="btn btn-ghost" id="modalCloseBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ---------- Sticky header on scroll ---------- */
+  const header = document.getElementById('siteHeader');
+  const onScroll = () => header.classList.toggle('scrolled', window.scrollY > 12);
+  document.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* ---------- Mobile menu ---------- */
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', isOpen);
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+  });
+  mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    mobileMenu.classList.remove('open');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }));
+
+  /* ---------- Scroll reveal ---------- */
+  const revealEls = document.querySelectorAll('.reveal');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    revealEls.forEach(el => el.classList.add('is-visible'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => io.observe(el));
+  }
+
+  /* ---------- Portfolio modal ---------- */
+  const overlay = document.getElementById('modalOverlay');
+  const modalTag = document.getElementById('modalTag');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalProblem = document.getElementById('modalProblem');
+  const modalFix = document.getElementById('modalFix');
+  let lastFocused = null;
+
+  function openModal(card){
+    modalTag.textContent = card.dataset.tag;
+    modalTitle.textContent = card.dataset.title;
+    modalProblem.textContent = card.dataset.problem;
+    modalFix.textContent = card.dataset.fix;
+    overlay.classList.add('open');
+    lastFocused = document.activeElement;
+    document.getElementById('modalClose').focus();
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (lastFocused) lastFocused.focus();
+  }
+
+  document.querySelectorAll('.view-demo-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openModal(btn.closest('.case-card'));
+    });
+  });
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+
+  /* ---------- Contact form ----------
+     NOTE FOR DEPLOYMENT:
+     This form is wired for a nice client-side success state only — it does not
+     send data anywhere yet. To make it actually deliver messages, pick one:
+
+     1) Formspree (easiest): sign up at formspree.io, then set
+        <form action="https://formspree.io/f/YOUR_ID" method="POST"> on #contactForm
+        and remove the e.preventDefault() line below.
+
+     2) Netlify Forms: add data-netlify="true" and a name="contact" attribute to
+        the <form> tag, plus a hidden input matching the form name, and Netlify
+        will capture submissions automatically when deployed there.
+
+     3) Any custom backend / email service (e.g. EmailJS, a serverless function):
+        replace the code inside the submit handler with your API call.
+  ------------------------------------------------- */
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) {
+      form.reportValidity();
+      return;
+    }
+    form.classList.add('hide');
+    success.classList.add('show');
+    form.reset();
+  });
+</script>
+
+</body>
+</html>
