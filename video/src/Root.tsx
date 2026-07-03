@@ -1,5 +1,9 @@
 import "./index.css";
 import { Composition } from "remotion";
+import {
+  CountryRoadBackground,
+  countryRoadBackgroundSchema,
+} from "./CountryRoadBackground";
 import { HelloWorld, myCompSchema } from "./HelloWorld";
 import { Logo, myCompSchema2 } from "./HelloWorld/Logo";
 
@@ -40,6 +44,21 @@ export const RemotionRoot: React.FC = () => {
         defaultProps={{
           logoColor1: "#91dAE2" as const,
           logoColor2: "#86A8E7" as const,
+        }}
+      />
+
+      <Composition
+        id="CountryRoadBackground"
+        component={CountryRoadBackground}
+        durationInFrames={600}
+        fps={30}
+        width={1080}
+        height={1920}
+        schema={countryRoadBackgroundSchema}
+        defaultProps={{
+          cloudSpeed: 0.4,
+          windIntensity: 0.5,
+          lightSweepSpeed: 1,
         }}
       />
     </>
