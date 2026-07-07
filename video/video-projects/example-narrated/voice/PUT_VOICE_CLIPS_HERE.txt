@@ -1,0 +1,7 @@
+Drop narration audio clips here, matched by order to backgrounds/:
+01.mp3
+02.mp3
+03.mp3
+Presence of files in this folder is what tells the agent to use "narrated" mode
+instead of the slideshow mode — each scene's duration is set automatically from
+its matching voice clip's length.

@@ -1,0 +1,5 @@
+Drop Joon or Pangiya pose images here (transparent PNG works best), matched by order to backgrounds/:
+01.png
+02.png
+03.png
+Optional — if you skip a scene's pose, that scene just shows the background alone.
