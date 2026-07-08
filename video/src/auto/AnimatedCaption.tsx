@@ -10,11 +10,11 @@ export const AnimatedCaption: React.FC<{ text: string }> = ({ text }) => {
     <div
       style={{
         position: "absolute",
-        top: "8%",
+        top: "50%",
         width: "100%",
         display: "flex",
         justifyContent: "center",
-        transform: `scale(${progress})`,
+        transform: `translateY(-50%) scale(${progress})`,
         opacity: progress,
         padding: "0 48px",
       }}
@@ -23,12 +23,12 @@ export const AnimatedCaption: React.FC<{ text: string }> = ({ text }) => {
         style={{
           textAlign: "center",
           fontFamily: "sans-serif",
-          fontWeight: 700,
-          fontSize: 60,
-          lineHeight: 1.3,
+          fontWeight: 800,
+          fontSize: 58,
+          lineHeight: 1.5,
           color: "white",
-          textShadow:
-            "0 2px 6px rgba(0,0,0,0.85), 0 4px 18px rgba(0,0,0,0.6), 0 0 2px rgba(0,0,0,0.9)",
+          WebkitTextStroke: "3px black",
+          textShadow: "0 6px 12px rgba(0,0,0,0.4)",
         }}
       >
         {text}
