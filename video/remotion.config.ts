@@ -9,3 +9,9 @@ import { enableTailwind } from '@remotion/tailwind-v4';
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.overrideWebpackConfig(enableTailwind);
+
+// This environment has no access to remotion.media (browser auto-download host),
+// so point at the Playwright-provisioned Chromium instead.
+if (process.env.REMOTION_BROWSER_EXECUTABLE) {
+  Config.setBrowserExecutable(process.env.REMOTION_BROWSER_EXECUTABLE);
+}
