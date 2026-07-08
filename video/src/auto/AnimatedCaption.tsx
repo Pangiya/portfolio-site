@@ -10,27 +10,25 @@ export const AnimatedCaption: React.FC<{ text: string }> = ({ text }) => {
     <div
       style={{
         position: "absolute",
-        bottom: "15%",
+        top: "8%",
         width: "100%",
         display: "flex",
         justifyContent: "center",
         transform: `scale(${progress})`,
         opacity: progress,
-        padding: "0 40px",
+        padding: "0 48px",
       }}
     >
       <div
         style={{
           textAlign: "center",
           fontFamily: "sans-serif",
-          fontWeight: 800,
-          fontSize: 64,
-          lineHeight: 1.25,
+          fontWeight: 700,
+          fontSize: 60,
+          lineHeight: 1.3,
           color: "white",
-          textShadow: "0 2px 12px rgba(0,0,0,0.6)",
-          background: "rgba(0,0,0,0.4)",
-          borderRadius: 24,
-          padding: "16px 32px",
+          textShadow:
+            "0 2px 6px rgba(0,0,0,0.85), 0 4px 18px rgba(0,0,0,0.6), 0 0 2px rgba(0,0,0,0.9)",
         }}
       >
         {text}

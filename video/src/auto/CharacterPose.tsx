@@ -15,11 +15,12 @@ export const CharacterPose: React.FC<{ src: string }> = ({ src }) => {
       style={{
         position: "absolute",
         bottom: 0,
-        left: "50%",
-        height: "75%",
-        transform: `translateX(-50%) translateY(${(1 - entrance) * 40}px)`,
+        left: "2%",
+        height: "65%",
+        transform: `translateY(${(1 - entrance) * 40}px)`,
         opacity: entrance,
         objectFit: "contain",
+        objectPosition: "left bottom",
       }}
     />
   );
