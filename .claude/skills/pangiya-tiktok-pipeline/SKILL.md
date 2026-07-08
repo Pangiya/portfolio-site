@@ -24,7 +24,14 @@ New videos go to a small pool of existing followers first as a test audience. If
 - **Design for the loop.** End on a line that makes someone want to reread the sequence — a callback to slide 1, or a twist that recontextualizes an earlier line. This is worth more per-view than almost anything else on the list above.
 - **Optimize for saves, not just likes.** Robert Greene concepts framed as personal truths are inherently saveable. A closing line like "save this for when you need it" is a legitimate, non-cheesy save prompt when it fits Pangiya's voice.
 - **Keep the hook in slide 1.** First 1-3 seconds decide the completion-rate ceiling for the whole video — don't bury the emotional hook on slide 2 or 3.
-- **Recurring format > one-offs.** The algorithm favors series it recognizes; viewers who know they usually like a format watch longer, reinforcing distribution. Pangiya's visual identity (grass/blue-sky, chill tone) already does this — keep it consistent rather than refreshing it per-segment.
+- **Recurring format > one-offs.** The algorithm favors series it recognizes; viewers who know they usually like a format watch longer, reinforcing distribution. Keep the visual house style (below) consistent rather than refreshing it per-segment.
+- **Steal mechanics, not content, from niche neighbors.** When starting a new series, look at what similarly-positioned accounts (e.g. official Robert Greene, law-by-law numbered-series creators, niche-applied spins) do structurally — numbered/finite series, real referents instead of "some people," front-loaded claims — and reframe the mechanic in Pangiya's own warm, non-lecturing voice rather than copying their content or tone directly.
+- **Tone check before shipping any script:** read it back and cut anything that explains *why* a feeling happens (sociological "we're taught to..." framing reads as lecturing). Keep only lines that observe or sit with the feeling — that's the difference between Pangiya's warm-elder voice and a psych-lecture voice.
+
+### Visual house style (current, as of the "Things People Never Say Out Loud" series)
+- **Character (Pangiya):** anchored bottom-left, ~42% of frame height so he never reaches into the vertically-centered caption band. Rendered with `filter: brightness(0.9) contrast(1.05) drop-shadow(...)` — a grounding contact shadow plus slight darkening so he reads as part of the scene rather than a flat pasted sticker. Only use his transparent-cutout poses (`Standing`, `Standing Back`, `Standing Explaining`, etc. — check for checkerboard transparency, not a baked-in background) as overlays; opaque full-scene art (baked-in background) isn't usable as a character overlay and should go in `backgrounds/` directly instead, or not be used as `characters/` input.
+- **Captions:** centered dead-center of the frame (`top: 50%`, translateY(-50%)), bold (`fontWeight: 800`), white fill with a black `WebkitTextStroke` (~3px) plus a soft drop shadow for depth — a meme-style stroke look, not a soft-glow/bottom-bar look. No background box behind the text.
+- These are implemented in `video/src/auto/CharacterPose.tsx` and `video/src/auto/AnimatedCaption.tsx` and apply automatically to every episode built through the agent — don't reintroduce a bottom-anchored caption or a full-height centered character unless explicitly asked to change the house style again.
 
 ### Community building (distinct from audience growth)
 - Reply to comments, ideally with video replies — it signals engagement to the algorithm and surfaces new segment ideas directly from what people ask.
@@ -45,118 +52,35 @@ New videos go to a small pool of existing followers first as a test audience. If
 
 ## Part 2 — Remotion Pipeline
 
-### Project shape
-Remotion Studio runs from the project root (where `remotion.config.ts` lives). The composition for Pangiya slides should live as its own component, driven by a typed data array — not hand-placed clips — so new segments are just new data, not new code.
+### Project shape (actual, current)
+The Remotion project lives in `video/` (Remotion Studio runs from there, where `remotion.config.ts` lives). The real pipeline is the **video agent**, not hand-written compositions per segment:
 
-### Slide data shape
-```ts
-// src/pangiya/slides.ts
-export interface Slide {
-  text: string;          // 2-5 word line, matches caption rules above
-  imagePath: string;      // local path to sourced Pexels/Unsplash image
-  durationInFrames: number; // pacing control per-slide
-}
+- `video/src/auto/AutoVideo.tsx` — the single composition that handles every episode. Detects "slideshow" vs "narrated" mode per-scene based on which files exist.
+- `video/src/auto/KenBurnsImage.tsx`, `CharacterPose.tsx`, `AnimatedCaption.tsx` — the shared building blocks (see visual house style above for current CharacterPose/AnimatedCaption specifics).
+- `video/agent/scanProject.js` + `video/agent/buildVideo.js` — reads a `video-projects/<name>/` folder, builds the scene data automatically, copies assets into `public/generated/`, and renders via `npx remotion render`.
+- `video/VIDEO-AGENT-README.md` — full folder-layout reference (`backgrounds/`, `characters/`, `voice/`, `captions.txt`, `music.mp3`).
 
-export const segmentSlides: Slide[] = [
-  { text: "Nobody warns you", imagePath: "public/images/slide1.jpg", durationInFrames: 75 },
-  { text: "about this part", imagePath: "public/images/slide2.jpg", durationInFrames: 75 },
-  // ...
-];
-```
+New episodes are **just new data**, never new components: create `video-projects/<episode-name>/`, drop in `backgrounds/01.jpg...`, `characters/01.png...` (optional, matched by sort order), and a `captions.txt` (one line per scene, `text|seconds` to override the default 3s duration).
 
-### Composition pattern using `<Series>`
-`<Series>` sequences slides back-to-back without manual offset math — each `<Series.Sequence>` just declares its own duration.
-
-```tsx
-// src/pangiya/PangiyaSlideshow.tsx
-import { Series, AbsoluteFill, Img, staticFile } from "remotion";
-import { segmentSlides } from "./slides";
-import { KenBurnsImage } from "./KenBurnsImage";
-import { AnimatedCaption } from "./AnimatedCaption";
-
-export const PangiyaSlideshow: React.FC = () => {
-  return (
-    <Series>
-      {segmentSlides.map((slide, i) => (
-        <Series.Sequence key={i} durationInFrames={slide.durationInFrames}>
-          <AbsoluteFill>
-            <KenBurnsImage src={staticFile(slide.imagePath)} />
-            <AnimatedCaption text={slide.text} />
-          </AbsoluteFill>
-        </Series.Sequence>
-      ))}
-    </Series>
-  );
-};
-```
-
-### Ken Burns zoom (subtle, not swimmy)
-Drive scale off the current frame within the sequence — use `useCurrentFrame()` from inside the sequence, not the parent timeline, so each slide's zoom restarts cleanly.
-
-```tsx
-// src/pangiya/KenBurnsImage.tsx
-import { useCurrentFrame, useVideoConfig, Img, interpolate } from "remotion";
-
-export const KenBurnsImage: React.FC<{ src: string }> = ({ src }) => {
-  const frame = useCurrentFrame();
-  const { durationInFrames } = useVideoConfig();
-  const scale = interpolate(frame, [0, durationInFrames], [1, 1.08], {
-    extrapolateRight: "clamp",
-  });
-  return (
-    <Img
-      src={src}
-      style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${scale})` }}
-    />
-  );
-};
-```
-
-### Spring-based caption entrance
-Use `spring()` for the text pop so captions feel snappy rather than linear — this matches the punchy tone the format needs.
-
-```tsx
-// src/pangiya/AnimatedCaption.tsx
-import { useCurrentFrame, useVideoConfig, spring } from "remotion";
-
-export const AnimatedCaption: React.FC<{ text: string }> = ({ text }) => {
-  const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const progress = spring({ frame, fps, config: { damping: 12, stiffness: 120 } });
-  return (
-    <div
-      style={{
-        position: "absolute",
-        bottom: "15%",
-        width: "100%",
-        textAlign: "center",
-        fontFamily: "sans-serif",
-        fontWeight: 800,
-        fontSize: 64,
-        color: "white",
-        textShadow: "0 2px 12px rgba(0,0,0,0.6)",
-        transform: `scale(${progress})`,
-        opacity: progress,
-      }}
-    >
-      {text}
-    </div>
-  );
-};
-```
+### Sourcing images
+Pexels/Unsplash direct fetches are often blocked by sandbox network policy — ask Nabil to upload photos directly into the repo (e.g. into the relevant `video-projects/<name>/backgrounds/` folder on the working branch) rather than assuming a URL will be fetchable.
 
 ### Rendering
 ```bash
-npx remotion render src/index.ts PangiyaSlideshow out/segment.mp4
+cd video
+export REMOTION_BROWSER_EXECUTABLE=/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell  # sandbox-only: no access to remotion.media's browser auto-download
+node agent/buildVideo.js <episode-name>
 ```
+Output lands at `video/out/<episode-name>.mp4`. If it's over ~30MB, re-encode with Remotion's bundled ffmpeg (`video/node_modules/@remotion/compositor-linux-x64-gnu/ffmpeg`, `-crf 27 -preset medium`) before sending — there's no system ffmpeg in this sandbox.
 
 ### Workflow this enables
-1. Claude generates the slide array (text + Pexels/Unsplash search terms) per the content rules in Part 1.
-2. Nabil sources images, drops them into `public/images/`, fills in `imagePath` fields.
-3. Remotion renders the full segment automatically — no manual CapCut assembly.
-4. Music gets added as a post-step (Remotion supports `<Audio>` too, if Nabil wants to fold that in later — ask before assuming, since current workflow may add music in CapCut after render).
+1. Claude generates the slide script (text + mood/image search term per line) per the content rules in Part 1, in Pangiya's warm-elder voice.
+2. Nabil sources images, drops them into the project's `backgrounds/` (and optionally `characters/`), matched by sort order to the caption lines.
+3. `node agent/buildVideo.js <name>` renders the full episode automatically — no manual CapCut assembly.
+4. Music gets added as a post-step (`music.mp3` in the project folder, mixed automatically) — ask before assuming Nabil wants it in-pipeline vs. added later in CapCut.
 
 ### When something's off
-- If Ken Burns feels too aggressive/swimmy on mobile playback, reduce the scale range (e.g. `[1, 1.04]`) rather than changing duration.
-- If captions feel like they're popping in too hard, soften the spring config (`stiffness: 80`) before touching duration or text length.
+- If Ken Burns feels too aggressive/swimmy on mobile playback, reduce the scale range in `KenBurnsImage.tsx` (e.g. `[1, 1.04]`) rather than changing duration.
+- If captions feel like they're popping in too hard, soften the spring config (`stiffness: 80`) in `AnimatedCaption.tsx` before touching duration or text length.
+- If the character overlaps the caption, it's almost always because `CharacterPose`'s `height` percentage is too tall for wherever the caption is currently anchored — shrink the character rather than moving the caption off-center.
 - Studio not reflecting changes: check that the dev server picked up the file save — Windows file-watching in Remotion Studio occasionally needs a manual refresh.
